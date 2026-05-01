@@ -43,7 +43,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Hallucination Detection & Mitigation Tool",
     description="Detects unsupported spans in LLM-generated answers given retrieved context.",
-    version="0.1.0",
+    version="0.2.0",
     lifespan=lifespan,
 )
 
@@ -68,6 +68,14 @@ class DetectRequest(BaseModel):
     answer: str = Field(..., description="Candidate answer text to verify.")
 
 
+class Token(BaseModel):
+    text: str
+    start: int
+    end: int
+    prob: float
+    pred: int
+
+
 class Span(BaseModel):
     start: int
     end: int
@@ -76,10 +84,32 @@ class Span(BaseModel):
     label: Literal["hallucinated", "supported"]
 
 
+class FocusSpan(BaseModel):
+    kind: Literal["number", "entity"]
+    start: int
+    end: int
+    text: str
+    confidence: float
+    context_value: str | None = None
+    explanation: str
+
+
+class Stats(BaseModel):
+    token_count: int
+    hallucinated_token_count: int
+    supported_token_count: int
+    hallucination_rate: float
+    avg_hallucinated_confidence: float
+    max_confidence: float
+
+
 class DetectResponse(BaseModel):
-    spans: list[Span]
-    overall_score: float = Field(..., description="Fraction of answer characters that are not flagged.")
     method: Literal["model", "heuristic"]
+    tokens: list[Token]
+    spans: list[Span]
+    focus_spans: list[FocusSpan]
+    stats: Stats
+    overall_score: float = Field(..., description="Fraction of answer characters that are not flagged.")
     latency_ms: float = Field(..., description="Server-side inference time in milliseconds.")
 
 

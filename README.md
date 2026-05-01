@@ -4,11 +4,22 @@ LLM-powered tool that detects unsupported text spans in generated answers,
 scores per-span confidence, and surfaces the supporting context — wrapped in
 a clean UI. Built for an AI / Machine Learning class project.
 
+## Screenshots
+
+**Mismatch detected** — model + numerical diff catch `"69 million"` and explain it against the context's `"67 million"`. Stats show 1 specific finding, 78% supported, 22% flagged, top confidence 99.9%.
+
+![Mismatch detected — France example](docs/screenshot-mismatch.png)
+
+**Clean answer** — Eiffel Tower example. Verdict: Supported · 0 specific findings · 100% of characters supported · donut shows fully green.
+
+![Clean answer — Eiffel Tower example](docs/screenshot-clean.png)
+
 ```
 ai_hallucination/
 ├── presentation/   ← React/Vite slide deck (15 slides, already complete)
 ├── backend/        ← FastAPI + lettucedetect (ModernBERT) detection service
-└── frontend/       ← Vite + React + Tailwind live demo UI
+├── frontend/       ← Vite + React + Tailwind live demo UI
+└── docs/           ← screenshots
 ```
 
 ## Architecture
